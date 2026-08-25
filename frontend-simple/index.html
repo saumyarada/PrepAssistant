@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Interview Buddy</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 700px; margin: 40px auto; padding: 0 20px; color: #222; }
+  h1 { margin-bottom: 4px; }
+  .sub { color: #666; margin-top: 0; }
+  section { margin-top: 32px; padding-top: 24px; border-top: 1px solid #ddd; }
+  label { display: block; margin-top: 12px; font-weight: 600; font-size: 14px; }
+  input, textarea { width: 100%; padding: 8px; margin-top: 4px; box-sizing: border-box; font-family: inherit; font-size: 14px; }
+  textarea { min-height: 80px; font-family: monospace; }
+  button { margin-top: 12px; padding: 8px 16px; cursor: pointer; }
+  .result { margin-top: 12px; padding: 12px; background: #f5f5f5; border-radius: 6px; white-space: pre-wrap; font-size: 14px; }
+  .error { background: #fde8e8; color: #b00; }
+  .stats-grid { display: flex; gap: 24px; margin-top: 12px; }
+  .stat { background: #f0f4ff; padding: 12px 16px; border-radius: 6px; }
+  .stat .num { font-size: 24px; font-weight: 700; }
+  .stat .label { font-size: 12px; color: #666; }
+  #userIdDisplay { font-size: 12px; color: #666; margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<h1>Interview Buddy</h1>
+<p class="sub">Connect your LeetCode profile, get AI hints, fixes, and suggestions.</p>
+
+<section id="profileSection">
+  <h2>1. Load your LeetCode profile</h2>
+  <label for="username">LeetCode username</label>
+  <input id="username" placeholder="e.g. neetcode">
+  <button onclick="loadProfile()">Load profile</button>
+  <div id="profileResult"></div>
+</section>
+
+<section id="hintSection">
+  <h2>2. Get a hint</h2>
+  <label for="hintProblem">Problem statement</label>
+  <textarea id="hintProblem" placeholder="Paste the problem description here"></textarea>
+  <label for="hintCode">Your current code (optional)</label>
+  <textarea id="hintCode" placeholder="def solve(...): ..."></textarea>
+  <button onclick="getHint()">Get hint</button>
+  <div id="hintResult"></div>
+</section>
+
+<section id="fixSection">
+  <h2>3. Fix my solution</h2>
+  <label for="fixProblem">Problem statement</label>
+  <textarea id="fixProblem"></textarea>
+  <label for="fixCode">Your code</label>
+  <textarea id="fixCode"></textarea>
+  <label for="fixError">Error message or failing case</label>
+  <textarea id="fixError" placeholder="e.g. IndexError on empty input, or wrong output for [1,2,3]"></textarea>
+  <button onclick="getFix()">Diagnose &amp; fix</button>
+  <div id="fixResult"></div>
+</section>
+
+<section id="suggestSection">
+  <h2>4. What should I practice next?</h2>
+  <button onclick="getSuggestion()">Suggest next problem</button>
+  <div id="suggestResult"></div>
+</section>
+
+<script>
+const API_BASE = "http://127.0.0.1:8000";
+let currentUserId = null;
+
+function showResult(elementId, text, isError = false) {
+  const el = document.getElementById(elementId);
+  el.innerHTML = `<div class="result ${isError ? 'error' : ''}">${text}</div>`;
+}
+
+async function loadProfile() {
+  const username = document.getElementById("username").value.trim();
+  if (!username) return;
+
+  showResult("profileResult", "Loading...");
+
+  try {
+    const res = await fetch(`${API_BASE}/api/leetcode/${encodeURIComponent(username)}`);
+    const data = await res.json();
+
+    if (!res.ok) {
+      showResult("profileResult", data.detail || "Failed to load profile", true);
+      return;
+    }
+
+    // We don't get user_id back from this endpoint directly yet —
+    // for this simple frontend, ask the user to note it from the
+    // backend logs/DB for now, or extend the endpoint later to
+    // return it. Shown here as a placeholder note.
+    const diffs = data.solved_by_difficulty;
+    const topics = Object.entries(data.solved_by_topic)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 8)
+      .map(([name, count]) => `${name}: ${count}`)
+      .join(", ");
+
+    document.getElementById("profileResult").innerHTML = `
+      <div class="stats-grid">
+        <div class="stat"><div class="num">${diffs.Easy || 0}</div><div class="label">Easy</div></div>
+        <div class="stat"><div class="num">${diffs.Medium || 0}</div><div class="label">Medium</div></div>
+        <div class="stat"><div class="num">${diffs.Hard || 0}</div><div class="label">Hard</div></div>
+      </div>
+      <div class="result">Top topics: ${topics || "none yet"}</div>
+      <div id="userIdDisplay">Note: for hint/fix/suggest below, this simple version needs a
+      user_id — copy it from your backend's /api/leetcode response or database for now.
+      A later version will wire this automatically.</div>
+      <label for="userIdInput" style="margin-top:12px;">User ID (for AI features below)</label>
+      <input id="userIdInput" placeholder="paste user id here" oninput="currentUserId = this.value">
+    `;
+  } catch (err) {
+    showResult("profileResult", "Could not reach the backend. Is it running on " + API_BASE + "?", true);
+  }
+}
+
+async function callAI(endpoint, body, resultElementId) {
+  showResult(resultElementId, "Thinking...");
+  try {
+    const res = await fetch(`${API_BASE}/api/ai/${endpoint}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      showResult(resultElementId, data.detail || "Request failed", true);
+      return;
+    }
+    showResult(resultElementId, data.output);
+  } catch (err) {
+    showResult(resultElementId, "Could not reach the backend. Is it running on " + API_BASE + "?", true);
+  }
+}
+
+function getHint() {
+  if (!currentUserId) { showResult("hintResult", "Load a profile and enter a user ID first.", true); return; }
+  callAI("hint", {
+    user_id: currentUserId,
+    problem_slug: "manual-entry",
+    problem_statement: document.getElementById("hintProblem").value,
+    user_code: document.getElementById("hintCode").value,
+  }, "hintResult");
+}
+
+function getFix() {
+  if (!currentUserId) { showResult("fixResult", "Load a profile and enter a user ID first.", true); return; }
+  callAI("fix", {
+    user_id: currentUserId,
+    problem_slug: "manual-entry",
+    problem_statement: document.getElementById("fixProblem").value,
+    user_code: document.getElementById("fixCode").value,
+    error_or_failing_case: document.getElementById("fixError").value,
+  }, "fixResult");
+}
+
+function getSuggestion() {
+  if (!currentUserId) { showResult("suggestResult", "Load a profile and enter a user ID first.", true); return; }
+  callAI("suggest", { user_id: currentUserId }, "suggestResult");
+}
+</script>
+
+</body>
+</html>
