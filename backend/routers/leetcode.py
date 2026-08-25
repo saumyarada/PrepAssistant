@@ -74,6 +74,7 @@ def get_leetcode_overview(
         total_by_difficulty = {}
 
     return LeetCodeSnapshotOut(
+        user_id=user.id,
         username=username,
         solved_by_difficulty=snapshot.solved_by_difficulty,
         total_by_difficulty=total_by_difficulty,

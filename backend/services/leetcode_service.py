@@ -6,6 +6,7 @@ the FastAPI app can call it directly. Talks to LeetCode's unofficial
 GraphQL endpoint — see README.md "Known risk" section.
 """
 
+import time
 import requests
 
 LEETCODE_GRAPHQL_URL = "https://leetcode.com/graphql"
@@ -55,18 +56,28 @@ class LeetCodeUserNotFound(Exception):
     pass
 
 
-def _run_query(query: str, variables: dict) -> dict:
-    response = requests.post(
-        LEETCODE_GRAPHQL_URL,
-        json={"query": query, "variables": variables},
-        headers=HEADERS,
-        timeout=10,
-    )
-    response.raise_for_status()
-    payload = response.json()
-    if "errors" in payload:
-        raise RuntimeError(f"GraphQL errors: {payload['errors']}")
-    return payload["data"]
+def _run_query(query: str, variables: dict, retries: int = 2) -> dict:
+    last_error = None
+    for attempt in range(retries + 1):
+        try:
+            response = requests.post(
+                LEETCODE_GRAPHQL_URL,
+                json={"query": query, "variables": variables},
+                headers=HEADERS,
+                timeout=20,
+            )
+            response.raise_for_status()
+            payload = response.json()
+            if "errors" in payload:
+                raise RuntimeError(f"GraphQL errors: {payload['errors']}")
+            return payload["data"]
+        except (requests.exceptions.Timeout, requests.exceptions.ConnectionError) as exc:
+            last_error = exc
+            if attempt < retries:
+                time.sleep(1.5 * (attempt + 1))  # backoff: 1.5s, then 3s
+                continue
+            raise
+    raise last_error  # pragma: no cover
 
 
 def fetch_profile(username: str) -> dict:

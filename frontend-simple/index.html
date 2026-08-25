@@ -101,10 +101,7 @@ async function loadProfile() {
       return;
     }
 
-    // We don't get user_id back from this endpoint directly yet —
-    // for this simple frontend, ask the user to note it from the
-    // backend logs/DB for now, or extend the endpoint later to
-    // return it. Shown here as a placeholder note.
+    currentUserId = data.user_id;
     const diffs = data.solved_by_difficulty;
     const topics = Object.entries(data.solved_by_topic)
       .sort((a, b) => b[1] - a[1])
@@ -119,11 +116,6 @@ async function loadProfile() {
         <div class="stat"><div class="num">${diffs.Hard || 0}</div><div class="label">Hard</div></div>
       </div>
       <div class="result">Top topics: ${topics || "none yet"}</div>
-      <div id="userIdDisplay">Note: for hint/fix/suggest below, this simple version needs a
-      user_id — copy it from your backend's /api/leetcode response or database for now.
-      A later version will wire this automatically.</div>
-      <label for="userIdInput" style="margin-top:12px;">User ID (for AI features below)</label>
-      <input id="userIdInput" placeholder="paste user id here" oninput="currentUserId = this.value">
     `;
   } catch (err) {
     showResult("profileResult", "Could not reach the backend. Is it running on " + API_BASE + "?", true);

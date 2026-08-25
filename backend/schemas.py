@@ -7,6 +7,7 @@ from pydantic import BaseModel
 
 
 class LeetCodeSnapshotOut(BaseModel):
+    user_id: str
     username: str
     solved_by_difficulty: dict
     total_by_difficulty: dict

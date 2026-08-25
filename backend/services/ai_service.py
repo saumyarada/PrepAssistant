@@ -12,9 +12,10 @@ dependency, consistent with leetcode_service.py).
 
 import os
 import json
+import time
 import requests
 
-GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.6-flash")
 GEMINI_URL = (
     f"https://generativelanguage.googleapis.com/v1beta/models/"
     f"{GEMINI_MODEL}:generateContent"
@@ -25,7 +26,7 @@ class AIServiceError(Exception):
     pass
 
 
-def _call_gemini(system_prompt: str, user_prompt: str) -> str:
+def _call_gemini(system_prompt: str, user_prompt: str, retries: int = 2) -> str:
     api_key = os.getenv("GEMINI_API_KEY")
     if not api_key:
         raise AIServiceError("GEMINI_API_KEY is not set")
@@ -35,23 +36,34 @@ def _call_gemini(system_prompt: str, user_prompt: str) -> str:
         "contents": [{"role": "user", "parts": [{"text": user_prompt}]}],
     }
 
-    response = requests.post(
-        GEMINI_URL,
-        params={"key": api_key},
-        json=body,
-        timeout=30,
-    )
+    last_error = None
+    for attempt in range(retries + 1):
+        try:
+            response = requests.post(
+                GEMINI_URL,
+                params={"key": api_key},
+                json=body,
+                timeout=30,
+            )
+        except (requests.exceptions.Timeout, requests.exceptions.ConnectionError) as exc:
+            last_error = exc
+            if attempt < retries:
+                time.sleep(1.5 * (attempt + 1))
+                continue
+            raise AIServiceError(f"Gemini API network error after retries: {exc}") from exc
 
-    if response.status_code != 200:
-        raise AIServiceError(
-            f"Gemini API error {response.status_code}: {response.text}"
-        )
+        if response.status_code != 200:
+            raise AIServiceError(
+                f"Gemini API error {response.status_code}: {response.text}"
+            )
 
-    data = response.json()
-    try:
-        return data["candidates"][0]["content"]["parts"][0]["text"]
-    except (KeyError, IndexError) as exc:
-        raise AIServiceError(f"Unexpected Gemini response shape: {data}") from exc
+        data = response.json()
+        try:
+            return data["candidates"][0]["content"]["parts"][0]["text"]
+        except (KeyError, IndexError) as exc:
+            raise AIServiceError(f"Unexpected Gemini response shape: {data}") from exc
+
+    raise AIServiceError(f"Gemini API failed after retries: {last_error}")  # pragma: no cover
 
 
 # ---------------------------------------------------------------------------
