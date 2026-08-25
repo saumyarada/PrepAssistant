@@ -19,6 +19,14 @@
   .stat .num { font-size: 24px; font-weight: 700; }
   .stat .label { font-size: 12px; color: #666; }
   #userIdDisplay { font-size: 12px; color: #666; margin-top: 8px; }
+  .pattern-row { display: flex; align-items: center; gap: 12px; margin-top: 8px; }
+  .pattern-name { width: 220px; font-size: 13px; flex-shrink: 0; }
+  .pattern-bar-track { flex: 1; height: 14px; background: #eee; border-radius: 7px; overflow: hidden; }
+  .pattern-bar-fill { height: 100%; background: #4a7dfc; border-radius: 7px 0 0 7px; }
+  .pattern-bar-fill.weak { background: #e08a3c; }
+  .pattern-bar-fill.zero { background: #ddd; }
+  .pattern-count { width: 50px; font-size: 12px; color: #666; text-align: right; flex-shrink: 0; }
+  .weak-callout { margin-top: 16px; padding: 10px 12px; background: #fff4e6; border-left: 3px solid #e08a3c; font-size: 14px; }
 </style>
 </head>
 <body>
@@ -34,8 +42,15 @@
   <div id="profileResult"></div>
 </section>
 
+<section id="patternSection">
+  <h2>2. Pattern mastery (intelligent overview)</h2>
+  <p class="sub" style="margin-bottom:0;">Based on your recently-solved problems, cross-referenced against known interview patterns.</p>
+  <button onclick="loadPatterns()">Load pattern coverage</button>
+  <div id="patternResult"></div>
+</section>
+
 <section id="hintSection">
-  <h2>2. Get a hint</h2>
+  <h2>3. Get a hint</h2>
   <label for="hintProblem">Problem statement</label>
   <textarea id="hintProblem" placeholder="Paste the problem description here"></textarea>
   <label for="hintCode">Your current code (optional)</label>
@@ -45,7 +60,7 @@
 </section>
 
 <section id="fixSection">
-  <h2>3. Fix my solution</h2>
+  <h2>4. Fix my solution</h2>
   <label for="fixProblem">Problem statement</label>
   <textarea id="fixProblem"></textarea>
   <label for="fixCode">Your code</label>
@@ -57,7 +72,7 @@
 </section>
 
 <section id="suggestSection">
-  <h2>4. What should I practice next?</h2>
+  <h2>5. What should I practice next?</h2>
   <button onclick="getSuggestion()">Suggest next problem</button>
   <div id="suggestResult"></div>
 </section>
@@ -112,6 +127,61 @@ async function loadProfile() {
     `;
   } catch (err) {
     showResult("profileResult", "Could not reach the backend. Is it running on " + API_BASE + "?", true);
+  }
+}
+
+async function loadPatterns() {
+  const username = document.getElementById("username").value.trim();
+  if (!username) {
+    showResult("patternResult", "Load your profile in section 1 first (enter a username).", true);
+    return;
+  }
+
+  showResult("patternResult", "Analyzing patterns... this can take a moment the first time (AI is classifying any unfamiliar problems).");
+
+  try {
+    const res = await fetch(`${API_BASE}/api/leetcode/${encodeURIComponent(username)}/patterns`);
+    const data = await res.json();
+
+    if (!res.ok) {
+      showResult("patternResult", data.detail || "Failed to load pattern coverage", true);
+      return;
+    }
+
+    if (data.note) {
+      showResult("patternResult", data.note);
+      return;
+    }
+
+    const entries = Object.entries(data.coverage)
+      .sort((a, b) => (a[1].solved / (a[1].total || 1)) - (b[1].solved / (b[1].total || 1)));
+
+    const rows = entries.map(([pattern, stats]) => {
+      const ratio = stats.total ? stats.solved / stats.total : 0;
+      const pct = Math.min(100, Math.round(ratio * 100));
+      const fillClass = stats.solved === 0 ? "zero" : (ratio < 0.34 ? "weak" : "");
+      return `
+        <div class="pattern-row">
+          <div class="pattern-name">${pattern}</div>
+          <div class="pattern-bar-track">
+            <div class="pattern-bar-fill ${fillClass}" style="width:${pct}%"></div>
+          </div>
+          <div class="pattern-count">${stats.solved}/${stats.total}</div>
+        </div>
+      `;
+    }).join("");
+
+    const weakest = (data.weakest_patterns || []).slice(0, 3).join(", ");
+    const weakCallout = weakest
+      ? `<div class="weak-callout">Weakest patterns right now: <strong>${weakest}</strong> — worth practicing next.</div>`
+      : "";
+
+    document.getElementById("patternResult").innerHTML = `
+      <div style="margin-top:12px;">${rows}</div>
+      ${weakCallout}
+    `;
+  } catch (err) {
+    showResult("patternResult", "Could not reach the backend. Is it running on " + API_BASE + "?", true);
   }
 }
 

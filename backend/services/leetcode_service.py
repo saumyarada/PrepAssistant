@@ -104,6 +104,40 @@ def fetch_topic_breakdown(username: str) -> dict:
     return {k: v for k, v in topics.items() if v > 0}
 
 
+RECENT_SOLVED_QUERY = """
+query recentAcSubmissions($username: String!, $limit: Int!) {
+  recentAcSubmissionList(username: $username, limit: $limit) {
+    id
+    title
+    titleSlug
+    timestamp
+  }
+}
+"""
+
+
+def fetch_recent_solved_problems(username: str, limit: int = 20) -> list[dict]:
+    """
+    NOTE: untested against live LeetCode data — validate this the same
+    way fetch_profile/fetch_topic_breakdown were validated (run it
+    against a real username and inspect the output) before relying on
+    it. LeetCode's public API only exposes *recent* accepted
+    submissions this way, not a user's full historical solved list,
+    unless they're authenticated. This limits pattern-coverage accuracy
+    to recently-solved problems for now.
+    """
+    data = _run_query(RECENT_SOLVED_QUERY, {"username": username, "limit": limit})
+    submissions = data.get("recentAcSubmissionList") or []
+    # Dedupe by slug (a problem can appear multiple times if resubmitted)
+    seen = {}
+    for sub in submissions:
+        seen[sub["titleSlug"]] = {
+            "slug": sub["titleSlug"],
+            "title": sub["title"],
+        }
+    return list(seen.values())
+
+
 def fetch_full_snapshot(username: str) -> dict:
     """Combines profile + topic breakdown into one payload for storage."""
     profile = fetch_profile(username)

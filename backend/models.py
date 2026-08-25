@@ -55,3 +55,19 @@ class AISession(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
     user = relationship("User", back_populates="ai_sessions")
+
+
+class ProblemClassification(Base):
+    """
+    Cache of AI-classified problem -> pattern mappings, for problems not
+    covered by the static pattern_taxonomy.json. Keyed by slug so any
+    user's solved problem benefits from a classification done for any
+    other user — classification cost only paid once per problem, ever.
+    """
+    __tablename__ = "problem_classifications"
+
+    slug = Column(String, primary_key=True)
+    title = Column(String, nullable=False)
+    pattern = Column(String, nullable=False)
+    source = Column(String, nullable=False, default="ai")  # "taxonomy" | "ai"
+    created_at = Column(DateTime, default=datetime.utcnow)

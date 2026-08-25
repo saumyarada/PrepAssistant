@@ -11,7 +11,7 @@ from sqlalchemy.orm import Session
 
 from database import get_db
 from models import User, LeetCodeSnapshot
-from services import leetcode_service
+from services import leetcode_service, pattern_service
 from schemas import LeetCodeSnapshotOut
 
 router = APIRouter(prefix="/api/leetcode", tags=["leetcode"])
@@ -80,3 +80,31 @@ def get_leetcode_overview(
         solved_by_topic=snapshot.solved_by_topic,
         last_synced_at=snapshot.last_synced_at,
     )
+
+
+@router.get("/{username}/patterns")
+def get_pattern_coverage(username: str, db: Session = Depends(get_db)):
+    """
+    Intelligent overview: cross-references the user's recently-solved
+    problems against the pattern taxonomy (and AI-classifies anything
+    not in it) to show pattern-level mastery instead of raw topic counts.
+
+    NOTE: relies on fetch_recent_solved_problems, which is untested
+    against live data — validate before depending on this endpoint.
+    """
+    try:
+        solved = leetcode_service.fetch_recent_solved_problems(username)
+    except leetcode_service.LeetCodeUserNotFound:
+        raise HTTPException(status_code=404, detail=f"No such LeetCode user: {username}")
+    except Exception as exc:
+        raise HTTPException(status_code=502, detail=f"LeetCode fetch failed: {exc}")
+
+    if not solved:
+        return {
+            "coverage": {},
+            "weakest_patterns": [],
+            "unclassified_count": 0,
+            "note": "No recent solved problems found for this user.",
+        }
+
+    return pattern_service.compute_pattern_coverage(db, solved)

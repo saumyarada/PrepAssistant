@@ -153,3 +153,40 @@ Solved problems by difficulty:
 Suggest 3 problems to practice next.
 """
     return _call_gemini(SUGGEST_SYSTEM_PROMPT, user_prompt)
+
+
+# ---------------------------------------------------------------------------
+# Pattern classification (for problems not in the static taxonomy)
+# ---------------------------------------------------------------------------
+
+KNOWN_PATTERNS = [
+    "Two Pointers", "Sliding Window", "Fast & Slow Pointers", "Merge Intervals",
+    "Binary Search", "Backtracking", "Dynamic Programming (1D)",
+    "Dynamic Programming (2D/Grid)", "Graph BFS/DFS", "Topological Sort",
+    "Heap / Priority Queue", "Tries", "Union-Find", "Monotonic Stack",
+    "Bit Manipulation", "Other",
+]
+
+CLASSIFY_SYSTEM_PROMPT = f"""\
+You classify a LeetCode problem into exactly one algorithmic pattern
+from this fixed list: {", ".join(KNOWN_PATTERNS)}.
+
+Rules:
+- Respond with ONLY the pattern name, exactly as written in the list
+  above. No explanation, no punctuation, nothing else.
+- If none of the specific patterns clearly fit, respond "Other".
+- Base your answer on the problem title and any topics given, using
+  your general knowledge of the problem if you recognize it.
+"""
+
+
+def classify_problem_pattern(problem_title: str, problem_slug: str) -> str:
+    user_prompt = f"""\
+Problem title: {problem_title}
+Problem slug: {problem_slug}
+
+Which pattern does this problem belong to?
+"""
+    result = _call_gemini(CLASSIFY_SYSTEM_PROMPT, user_prompt).strip()
+    # Guard against the model returning something outside the fixed list
+    return result if result in KNOWN_PATTERNS else "Other"

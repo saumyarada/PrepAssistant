@@ -1,0 +1,84 @@
+{
+  "Two Pointers": [
+    {"slug": "two-sum-ii-input-array-is-sorted", "title": "Two Sum II - Input Array Is Sorted", "difficulty": "Medium"},
+    {"slug": "3sum", "title": "3Sum", "difficulty": "Medium"},
+    {"slug": "container-with-most-water", "title": "Container With Most Water", "difficulty": "Medium"},
+    {"slug": "trapping-rain-water", "title": "Trapping Rain Water", "difficulty": "Hard"}
+  ],
+  "Sliding Window": [
+    {"slug": "longest-substring-without-repeating-characters", "title": "Longest Substring Without Repeating Characters", "difficulty": "Medium"},
+    {"slug": "minimum-window-substring", "title": "Minimum Window Substring", "difficulty": "Hard"},
+    {"slug": "longest-repeating-character-replacement", "title": "Longest Repeating Character Replacement", "difficulty": "Medium"},
+    {"slug": "permutation-in-string", "title": "Permutation in String", "difficulty": "Medium"}
+  ],
+  "Fast & Slow Pointers": [
+    {"slug": "linked-list-cycle", "title": "Linked List Cycle", "difficulty": "Easy"},
+    {"slug": "find-the-duplicate-number", "title": "Find the Duplicate Number", "difficulty": "Medium"},
+    {"slug": "happy-number", "title": "Happy Number", "difficulty": "Easy"}
+  ],
+  "Merge Intervals": [
+    {"slug": "merge-intervals", "title": "Merge Intervals", "difficulty": "Medium"},
+    {"slug": "insert-interval", "title": "Insert Interval", "difficulty": "Medium"},
+    {"slug": "non-overlapping-intervals", "title": "Non-overlapping Intervals", "difficulty": "Medium"},
+    {"slug": "meeting-rooms-ii", "title": "Meeting Rooms II", "difficulty": "Medium"}
+  ],
+  "Binary Search": [
+    {"slug": "binary-search", "title": "Binary Search", "difficulty": "Easy"},
+    {"slug": "search-in-rotated-sorted-array", "title": "Search in Rotated Sorted Array", "difficulty": "Medium"},
+    {"slug": "find-minimum-in-rotated-sorted-array", "title": "Find Minimum in Rotated Sorted Array", "difficulty": "Medium"},
+    {"slug": "koko-eating-bananas", "title": "Koko Eating Bananas", "difficulty": "Medium"}
+  ],
+  "Backtracking": [
+    {"slug": "subsets", "title": "Subsets", "difficulty": "Medium"},
+    {"slug": "permutations", "title": "Permutations", "difficulty": "Medium"},
+    {"slug": "combination-sum", "title": "Combination Sum", "difficulty": "Medium"},
+    {"slug": "n-queens", "title": "N-Queens", "difficulty": "Hard"},
+    {"slug": "word-search", "title": "Word Search", "difficulty": "Medium"}
+  ],
+  "Dynamic Programming (1D)": [
+    {"slug": "climbing-stairs", "title": "Climbing Stairs", "difficulty": "Easy"},
+    {"slug": "house-robber", "title": "House Robber", "difficulty": "Medium"},
+    {"slug": "coin-change", "title": "Coin Change", "difficulty": "Medium"},
+    {"slug": "longest-increasing-subsequence", "title": "Longest Increasing Subsequence", "difficulty": "Medium"}
+  ],
+  "Dynamic Programming (2D/Grid)": [
+    {"slug": "unique-paths", "title": "Unique Paths", "difficulty": "Medium"},
+    {"slug": "edit-distance", "title": "Edit Distance", "difficulty": "Hard"},
+    {"slug": "longest-common-subsequence", "title": "Longest Common Subsequence", "difficulty": "Medium"}
+  ],
+  "Graph BFS/DFS": [
+    {"slug": "number-of-islands", "title": "Number of Islands", "difficulty": "Medium"},
+    {"slug": "clone-graph", "title": "Clone Graph", "difficulty": "Medium"},
+    {"slug": "course-schedule", "title": "Course Schedule", "difficulty": "Medium"},
+    {"slug": "pacific-atlantic-water-flow", "title": "Pacific Atlantic Water Flow", "difficulty": "Medium"}
+  ],
+  "Topological Sort": [
+    {"slug": "course-schedule-ii", "title": "Course Schedule II", "difficulty": "Medium"},
+    {"slug": "alien-dictionary", "title": "Alien Dictionary", "difficulty": "Hard"}
+  ],
+  "Heap / Priority Queue": [
+    {"slug": "kth-largest-element-in-an-array", "title": "Kth Largest Element in an Array", "difficulty": "Medium"},
+    {"slug": "top-k-frequent-elements", "title": "Top K Frequent Elements", "difficulty": "Medium"},
+    {"slug": "find-median-from-data-stream", "title": "Find Median from Data Stream", "difficulty": "Hard"},
+    {"slug": "merge-k-sorted-lists", "title": "Merge k Sorted Lists", "difficulty": "Hard"}
+  ],
+  "Tries": [
+    {"slug": "implement-trie-prefix-tree", "title": "Implement Trie (Prefix Tree)", "difficulty": "Medium"},
+    {"slug": "word-search-ii", "title": "Word Search II", "difficulty": "Hard"}
+  ],
+  "Union-Find": [
+    {"slug": "number-of-provinces", "title": "Number of Provinces", "difficulty": "Medium"},
+    {"slug": "redundant-connection", "title": "Redundant Connection", "difficulty": "Medium"},
+    {"slug": "accounts-merge", "title": "Accounts Merge", "difficulty": "Medium"}
+  ],
+  "Monotonic Stack": [
+    {"slug": "daily-temperatures", "title": "Daily Temperatures", "difficulty": "Medium"},
+    {"slug": "largest-rectangle-in-histogram", "title": "Largest Rectangle in Histogram", "difficulty": "Hard"},
+    {"slug": "car-fleet", "title": "Car Fleet", "difficulty": "Medium"}
+  ],
+  "Bit Manipulation": [
+    {"slug": "single-number", "title": "Single Number", "difficulty": "Easy"},
+    {"slug": "number-of-1-bits", "title": "Number of 1 Bits", "difficulty": "Easy"},
+    {"slug": "counting-bits", "title": "Counting Bits", "difficulty": "Easy"}
+  ]
+}
