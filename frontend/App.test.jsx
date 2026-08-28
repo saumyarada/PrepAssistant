@@ -68,6 +68,7 @@ describe("App", () => {
     render(<App />);
     expect(within(document.querySelector(".card-grid")).getAllByRole("button", { name: "Get hint" })).toHaveLength(4);
     expect(screen.getByText("no profile loaded")).toBeInTheDocument();
+    expect(screen.getByText("AI powered by Gemini")).toBeInTheDocument();
   });
 
   it("filters suggestions when a pattern group is selected", () => {

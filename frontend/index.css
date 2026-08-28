@@ -79,7 +79,7 @@ a { color: inherit; }
 }
 .hero h1 .accent { color: var(--p-graph); }
 .hero p { color: var(--text-dim); font-size: 14px; line-height: 1.5; max-width: 560px; margin: 0 auto; }
-.hero-tools-copy { margin-top: 16px !important; color: var(--text) !important; }
+.hero-meta { color: var(--p-graph); font-size: 10px; letter-spacing: 0.04em; margin-top: 14px; }
 .hero-actions { display: flex; justify-content: center; gap: 10px; margin-top: 16px; }
 .hero-tool-button { background: var(--p-graph); border: 1px solid var(--p-graph); border-radius: 6px; color: #06110F; cursor: pointer; font-size: 13px; font-weight: 600; padding: 9px 16px; }
 .hero-tool-button.secondary { background: transparent; color: var(--text); }

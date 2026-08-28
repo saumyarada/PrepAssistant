@@ -4,10 +4,8 @@ export default function Hero() {
       <h1 className="display">
         Find your next <span className="accent">pattern</span>.
       </h1>
-      <p>Choose what matters most. Practice from there.</p>
-      <p className="hero-tools-copy">
-        Have a LeetCode problem? Head to Get hint or Bug fixer for help solving it.
-      </p>
+      <p>Practice smarter with pattern-based problems and AI help when you get stuck.</p>
+      <div className="hero-meta mono">AI powered by Gemini</div>
     </div>
   );
 }

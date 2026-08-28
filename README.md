@@ -22,27 +22,27 @@ and an AI layer for hints, fixes, and suggestions.
 1. User enters their LeetCode username
 2. App syncs their public LeetCode profile and shows a dashboard
    (solved by difficulty, solved by topic)
-3. App shows an intelligent pattern-mastery overview: recently-solved
-   problems cross-referenced against a curated pattern taxonomy
-   (Two Pointers, Sliding Window, Backtracking, etc.), with AI filling
-   in classification for problems outside the curated set
-4. User pastes in a problem they're working on
-5. User can ask for a Socratic-style hint, or submit a broken solution
-   for an AI-assisted fix (diagnosis + minimal patch, not a rewrite)
-6. App suggests the next problem to practice based on weak topics/patterns
+3. App shows recently solved problems and personalized recommendations
+  based on patterns the user has not recently solved
+4. User can browse pattern groups, refresh recommendations, and select
+  a pattern to see matching problems
+5. User pastes in a problem they're working on
+6. User can ask for a Socratic-style hint, or submit a broken solution
+  for an AI-assisted fix (diagnosis + minimal patch, not a rewrite)
 
 ## Feature List (current)
 
 1. LeetCode profile sync + overview dashboard (solved by difficulty/topic)
-2. **Pattern mastery overview** — solved problems classified into
-   algorithmic patterns (hardcoded taxonomy for well-known problems,
-   AI classification + caching for everything else), with weakest
-   patterns surfaced
+2. **Pattern mastery overview** — recently solved problems classified
+  into algorithmic patterns (hardcoded taxonomy for well-known
+  problems, AI classification + caching for everything else), with
+  weakest and best patterns surfaced
 3. AI hints on a problem (given problem + user's current code)
 4. AI solution fixing (given problem + code + error/failing case)
-5. Next-problem suggestions (based on topic/difficulty gaps)
-6. Simple static frontend exercising all of the above, with automatic
-   user-session handling (no manual ID entry)
+5. Dynamic problem recommendations based on recently solved problems
+6. React frontend with four-card random refresh, pattern filtering,
+  recently solved pagination, and a separate hint/fix tools page
+7. Simple static frontend exercising the core API flows
 
 ## Out of Scope (for now)
 
@@ -57,7 +57,7 @@ and an AI layer for hints, fixes, and suggestions.
 | Layer         | Choice                        | Why                                              |
 |---------------|--------------------------------|---------------------------------------------------|
 | Backend       | FastAPI (Python)               | Async support, auto-generated API docs            |
-| Frontend      | Static HTML/JS (`frontend-simple/`) | No build step; a React frontend is planned next |
+| Frontend      | React + Vite (`frontend/`) and static HTML/JS (`frontend-simple/`) | React dashboard plus a no-build API client |
 | Database      | Postgres (Supabase / Neon) or SQLite for local dev | Multi-user; SQLite is fine early on |
 | AI            | Gemini API                     | Hints, solution fixing, suggestions, pattern classification |
 | LeetCode data | Unofficial GraphQL endpoint    | No official public API exists                     |
@@ -92,6 +92,9 @@ leetcode_snapshots
   submission_calendar    (JSON, currently unused)
   last_synced_at
 
+Recent solved problems are fetched from LeetCode during sync and returned
+to the frontend; they are not currently stored in the snapshot table.
+
 ai_sessions
   id (UUID)
   user_id (FK -> users.id)
@@ -120,8 +123,8 @@ users.
 
 | Method | Path | Description |
 |---|---|---|
-| GET | `/api/leetcode/{username}` | Fetch (and cache) a user's LeetCode profile stats; returns `user_id` |
-| GET | `/api/leetcode/{username}/patterns` | Intelligent pattern-mastery overview |
+| GET | `/api/leetcode/{username}` | Fetch (and cache) profile stats and recent solved problems; returns `user_id` |
+| GET | `/api/leetcode/{username}/patterns` | Pattern coverage, solved problems, and unsolved recommendations |
 | POST | `/api/ai/hint` | Get a Socratic hint for a problem |
 | POST | `/api/ai/fix` | Diagnose and minimally fix a broken solution |
 | POST | `/api/ai/suggest` | Get 3 next-problem suggestions based on weak topics |
@@ -155,11 +158,19 @@ Visit `http://127.0.0.1:8000/docs` for interactive API docs.
 ### 2. Frontend setup
 
 ```bash
+cd frontend
+npm install
+npm run dev
+```
+Visit `http://localhost:5500`. Keep the backend running in a separate
+terminal — the React frontend calls it at `http://127.0.0.1:8000`.
+
+The original no-build frontend is still available with:
+
+```bash
 cd frontend-simple
 python3 -m http.server 5500
 ```
-Visit `http://127.0.0.1:5500`. Keep the backend running in a separate
-terminal — the frontend calls it at `http://127.0.0.1:8000`.
 
 ### 3. Validate the LeetCode data source standalone (optional)
 
@@ -179,11 +190,11 @@ python3 leetcode_query_test.py <your_leetcode_username>
   `.env.example` (placeholder values) is tracked. If a real key is ever
   committed by accident, rotate it immediately and purge it from git
   history before pushing again.
-- **Pattern coverage is based on recent activity, not full history.**
+- **Pattern coverage and recommendations are based on recent activity, not full history.**
   LeetCode's public API only exposes recent accepted submissions
   without authentication, so users who solved many problems long ago
-  (with no recent activity) may see sparse pattern coverage that
-  understates their actual experience.
+  (with no recent activity) may see sparse solved cards and pattern
+  coverage that understates their actual experience.
 
 ## Roadmap
 
@@ -192,7 +203,8 @@ python3 leetcode_query_test.py <your_leetcode_username>
 - [x] Phase 3: AI layer (hint / fix / suggest services)
 - [x] Phase 3.5: Intelligent pattern-mastery overview (taxonomy + AI
       classification hybrid, with caching)
-- [x] Phase 4 (partial): Simple static frontend, auto user-session
-- [ ] Phase 4 (full): React frontend with dashboard, code editor, auth
+- [x] Phase 4 (partial): React frontend with dashboard, dynamic
+  recommendations, and separate hint/fix tools page
+- [ ] Phase 4 (full): Persistent authentication and code editor
 - [ ] Phase 5: Deployment (Railway/Render + Vercel)
 - [ ] Phase 6: Polish (error handling, measurable claims for resume writeup)
