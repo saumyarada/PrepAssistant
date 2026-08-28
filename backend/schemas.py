@@ -3,7 +3,8 @@ Pydantic schemas for API request/response validation.
 """
 
 from datetime import datetime
-from pydantic import BaseModel
+from typing import Optional
+from pydantic import BaseModel, Field
 
 
 class LeetCodeSnapshotOut(BaseModel):
@@ -13,20 +14,21 @@ class LeetCodeSnapshotOut(BaseModel):
     total_by_difficulty: dict
     solved_by_topic: dict
     last_synced_at: datetime
+    solved_problems: list[dict] = Field(default_factory=list)
 
     class Config:
         from_attributes = True
 
 
 class HintRequest(BaseModel):
-    user_id: str
+    user_id: Optional[str] = None
     problem_slug: str
     problem_statement: str
     user_code: str = ""
 
 
 class FixRequest(BaseModel):
-    user_id: str
+    user_id: Optional[str] = None
     problem_slug: str
     problem_statement: str
     user_code: str

@@ -65,10 +65,12 @@ def compute_pattern_coverage(db: Session, solved_problems: list[dict]) -> dict:
     solved_by_pattern: dict[str, list[str]] = {p: [] for p in PATTERN_TAXONOMY}
     solved_by_pattern.setdefault("Other", [])
 
+    solved_details = []
     for problem in solved_problems:
         pattern = _classify_one(db, problem["slug"], problem["title"])
         solved_by_pattern.setdefault(pattern, [])
         solved_by_pattern[pattern].append(problem["slug"])
+        solved_details.append({**problem, "pattern": pattern})
 
     coverage = {}
     for pattern, canonical_problems in PATTERN_TAXONOMY.items():
@@ -86,8 +88,18 @@ def compute_pattern_coverage(db: Session, solved_problems: list[dict]) -> dict:
 
     weakest = sorted(coverage.keys(), key=ratio)
 
+    solved_slugs = {problem["slug"] for problem in solved_problems}
+    recommended = [
+        {**problem, "pattern": pattern}
+        for pattern in weakest
+        for problem in PATTERN_TAXONOMY[pattern]
+        if problem["slug"] not in solved_slugs
+    ]
+
     return {
         "coverage": coverage,
         "weakest_patterns": weakest,
         "unclassified_count": len(solved_by_pattern.get("Other", [])),
+        "solved_problems": solved_details,
+        "recommended_problems": recommended,
     }

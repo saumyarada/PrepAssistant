@@ -14,7 +14,10 @@ from schemas import HintRequest, FixRequest, SuggestRequest, AIResponse
 router = APIRouter(prefix="/api/ai", tags=["ai"])
 
 
-def _log_session(db: Session, user_id: str, problem_slug: str, session_type: str, input_text: str, output_text: str):
+def _log_session(db: Session, user_id: str | None, problem_slug: str, session_type: str, input_text: str, output_text: str):
+    if user_id is None:
+        return
+
     session = AISession(
         user_id=user_id,
         problem_slug=problem_slug,

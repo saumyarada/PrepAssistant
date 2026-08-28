@@ -47,6 +47,7 @@ def get_leetcode_overview(
         or snapshot.last_synced_at < datetime.utcnow() - CACHE_TTL
     )
 
+    solved_problems = []
     if is_stale or force_refresh:
         try:
             fresh = leetcode_service.fetch_full_snapshot(username)
@@ -73,6 +74,13 @@ def get_leetcode_overview(
         # it rarely changes and isn't the interesting number anyway.
         total_by_difficulty = {}
 
+    # LeetCode exposes recent accepted submissions publicly. Keep this list
+    # in the response so the UI can personalize its solved and suggested cards.
+    try:
+        solved_problems = leetcode_service.fetch_recent_solved_problems(username)
+    except Exception:
+        solved_problems = []
+
     return LeetCodeSnapshotOut(
         user_id=user.id,
         username=username,
@@ -80,6 +88,7 @@ def get_leetcode_overview(
         total_by_difficulty=total_by_difficulty,
         solved_by_topic=snapshot.solved_by_topic,
         last_synced_at=snapshot.last_synced_at,
+        solved_problems=solved_problems,
     )
 
 
