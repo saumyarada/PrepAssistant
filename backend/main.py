@@ -7,12 +7,20 @@ Run with:
 Then visit http://127.0.0.1:8000/docs for the auto-generated API docs.
 """
 
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from database import engine, Base
 import models  # noqa: F401 (needed so models are registered on Base before create_all)
 from routers import leetcode, ai
+
+allowed_origins = [
+    origin.strip()
+    for origin in os.getenv("ALLOWED_ORIGINS", "*").split(",")
+    if origin.strip()
+]
 
 # Creates tables if they don't exist yet. Fine for early development;
 # switch to Alembic migrations once the schema stabilizes.
@@ -22,7 +30,7 @@ app = FastAPI(title="Interview Buddy API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # dev-only: tighten this before deploying publicly
+    allow_origins=allowed_origins,
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
