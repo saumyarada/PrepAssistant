@@ -209,7 +209,7 @@ export default function App() {
         <div className="section profile-summary">
           <div className="section-label mono">your progress</div>
           <StatRow solvedByDifficulty={profile?.solved_by_difficulty} />
-          {patternData && !patternData.note && (
+          {patternData && !patternData.note && solvedProblems.length > 0 && (
             <div className="pattern-highlights">
               {weakestPatterns.length > 0 && (
                 <div className="pattern-note weak-patterns">
