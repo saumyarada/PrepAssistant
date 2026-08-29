@@ -98,7 +98,7 @@ export function FixTool({ userId, problem, onProblemChange, focusToken }) {
       <textarea ref={problemRef} value={problem} onChange={(e) => onProblemChange(e.target.value)} />
       <label>Your code</label>
       <textarea value={code} onChange={(e) => setCode(e.target.value)} />
-      <label>Error message or failing case</label>
+      <label>Error message or failing case (optional)</label>
       <textarea
         placeholder="e.g. IndexError on empty input"
         value={errorCase}
