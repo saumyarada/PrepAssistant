@@ -39,7 +39,7 @@ export function HintTool({ userId, problem, onProblemChange, focusToken }) {
       <label>Problem statement</label>
       <textarea
         ref={problemRef}
-        placeholder="Paste the problem description here"
+        placeholder="Paste the problem title (e.g. Two Sum) or problem description here"
         value={problem}
         onChange={(e) => onProblemChange(e.target.value)}
       />
