@@ -67,6 +67,33 @@ a { color: inherit; }
 .logo { font-weight: 700; font-size: 18px; letter-spacing: -0.02em; }
 .logo .dot { color: var(--p-graph); }
 .status-pill { font-size: 12px; color: var(--text-faint); font-family: "JetBrains Mono", monospace; }
+.info-button, .info-close {
+  align-items: center;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  color: var(--text-dim);
+  cursor: pointer;
+  display: inline-flex;
+  font-family: Georgia, serif;
+  font-size: 13px;
+  font-style: italic;
+  height: 24px;
+  justify-content: center;
+  line-height: 1;
+  padding: 0;
+  width: 24px;
+}
+.info-button:hover, .info-close:hover { border-color: var(--p-graph); color: var(--text); }
+.info-backdrop { align-items: flex-start; background: rgba(5, 8, 13, 0.72); display: flex; inset: 0; justify-content: center; padding: 13vh 20px 30px; position: fixed; z-index: 10; }
+.info-modal { background: var(--surface-raised); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4); max-width: 520px; padding: 24px; width: 100%; }
+.info-modal-header { align-items: flex-start; display: flex; justify-content: space-between; }
+.info-modal h2 { font-size: 25px; margin: 0; }
+.info-modal p { color: var(--text-dim); font-size: 14px; line-height: 1.6; margin: 18px 0; }
+.info-steps { border-top: 1px solid var(--border); display: grid; gap: 14px; padding-top: 16px; }
+.info-steps div { display: grid; gap: 3px; }
+.info-steps strong { font-size: 13px; }
+.info-steps span { color: var(--text-dim); font-size: 12px; line-height: 1.45; }
 
 /* ---------- Hero ---------- */
 .hero { max-width: 860px; margin: 0 auto; padding: 48px 32px 20px; text-align: center; }

@@ -122,7 +122,7 @@ describe("App", () => {
     // Recommendations now come from the synced backend response.
     expect(within(document.querySelector(".card-grid")).getAllByRole("button", { name: "Get hint" })).toHaveLength(4);
 
-    expect(screen.queryByText("Work through your problem.")).not.toBeInTheDocument();
+    expect(screen.queryByText("Get unstuck on your problem.")).not.toBeInTheDocument();
   });
 
   it("returns to the general landing page from synced mode", async () => {
@@ -218,17 +218,17 @@ describe("App", () => {
       .closest(".problem-card");
     fireEvent.click(card);
 
-    const hintTextarea = screen.getByPlaceholderText("Paste the problem description here");
+    const hintTextarea = screen.getByPlaceholderText("Paste the problem title (e.g. Two Sum) or problem description here");
     expect(hintTextarea).toHaveValue(card.querySelector(".problem-title").textContent);
-    expect(screen.getByText("Work through your problem.")).toBeInTheDocument();
+    expect(screen.getByText("Get unstuck on your problem.")).toBeInTheDocument();
   });
 
   it("opens the dedicated hint page from the home button", () => {
     render(<App />);
     fireEvent.click(document.querySelector(".topbar-actions button"));
 
-    expect(screen.getByText("Work through your problem.")).toBeInTheDocument();
-    expect(screen.getByPlaceholderText("Paste the problem description here")).toBeInTheDocument();
+    expect(screen.getByText("Get unstuck on your problem.")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("Paste the problem title (e.g. Two Sum) or problem description here")).toBeInTheDocument();
   });
 
   it("clicking the Bug fixer button on a card populates the fix tool, not the hint tool", () => {
@@ -246,7 +246,7 @@ describe("App", () => {
     expect(fixTextarea).toHaveValue(card.querySelector(".problem-title").textContent);
 
     // Hint tool should remain untouched
-    const hintTextarea = screen.getByPlaceholderText("Paste the problem description here");
+    const hintTextarea = screen.getByPlaceholderText("Paste the problem title (e.g. Two Sum) or problem description here");
     expect(hintTextarea).toHaveValue("");
   });
 
@@ -260,9 +260,9 @@ describe("App", () => {
     const hintButton = within(card).getByText("Get hint");
     fireEvent.click(hintButton);
 
-    const hintTextarea = screen.getByPlaceholderText("Paste the problem description here");
+    const hintTextarea = screen.getByPlaceholderText("Paste the problem title (e.g. Two Sum) or problem description here");
     expect(hintTextarea).toHaveValue(card.querySelector(".problem-title").textContent);
-    expect(screen.getByText("Work through your problem.")).toBeInTheDocument();
+    expect(screen.getByText("Get unstuck on your problem.")).toBeInTheDocument();
   });
 
   it("clicking Get hint pre-login sends the request without a profile", async () => {
@@ -272,7 +272,7 @@ describe("App", () => {
       .closest(".problem-card");
     fireEvent.click(card);
 
-    const hintTextarea = screen.getByPlaceholderText("Paste the problem description here");
+    const hintTextarea = screen.getByPlaceholderText("Paste the problem title (e.g. Two Sum) or problem description here");
     expect(hintTextarea).toHaveValue(card.querySelector(".problem-title").textContent);
 
     const getHintButtons = screen.getAllByText("Get hint");

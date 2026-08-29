@@ -1,5 +1,15 @@
 # PrepAssistant
 
+## Resume Description
+
+**PrepAssistant — AI-Powered Interview Practice Platform**  
+Personal Project
+
+- Built and deployed a full-stack coding-interview prep tool that integrates with users' LeetCode history via GraphQL, clustering solved problems by algorithmic pattern (not raw topic tags) to surface targeted practice recommendations
+- Designed an AI-driven hint/evaluation pipeline (Gemini API) that reviews user solutions and generates next-problem suggestions based on pattern mastery gaps
+- Implemented progress tracking with SQLite, persisting per-user problem-solving history and pattern coverage over time
+- Deployed on Vercel; [add: X users tested, Y problems tracked, or latency/accuracy metric]
+
 An AI-assisted interview practice tool that connects to your LeetCode
 profile, gives you an intelligent overview of your progress by algorithm
 pattern (not just raw topic counts), and helps you practice smarter with
