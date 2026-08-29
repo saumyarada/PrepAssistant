@@ -26,14 +26,6 @@ export default function TopBar({ statusText, onHome, onOpenTools }) {
           <div className="logo display">
             prep<span className="dot">.</span>assistant
           </div>
-        </div>
-        <div className="topbar-right">
-          {onOpenTools && (
-            <div className="topbar-actions">
-              <button onClick={() => onOpenTools("hint")}>Get hint</button>
-              <button onClick={() => onOpenTools("fix")}>Bug fixer</button>
-            </div>
-          )}
           <button
             className="info-button"
             aria-label="About PrepAssistant"
@@ -43,6 +35,14 @@ export default function TopBar({ statusText, onHome, onOpenTools }) {
           >
             i
           </button>
+        </div>
+        <div className="topbar-right">
+          {onOpenTools && (
+            <div className="topbar-actions">
+              <button onClick={() => onOpenTools("hint")}>Get hint</button>
+              <button onClick={() => onOpenTools("fix")}>Bug fixer</button>
+            </div>
+          )}
           <div className="status-pill mono">{statusText}</div>
         </div>
       </div>
