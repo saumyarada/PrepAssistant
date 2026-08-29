@@ -69,6 +69,11 @@ def _run_query(query: str, variables: dict, retries: int = 2) -> dict:
             response.raise_for_status()
             payload = response.json()
             if "errors" in payload:
+                if any(
+                    "user does not exist" in error.get("message", "").lower()
+                    for error in payload["errors"]
+                ):
+                    raise LeetCodeUserNotFound(variables["username"])
                 raise RuntimeError(f"GraphQL errors: {payload['errors']}")
             return payload["data"]
         except (requests.exceptions.Timeout, requests.exceptions.ConnectionError) as exc:

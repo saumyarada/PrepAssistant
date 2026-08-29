@@ -52,7 +52,10 @@ def get_leetcode_overview(
         try:
             fresh = leetcode_service.fetch_full_snapshot(username)
         except leetcode_service.LeetCodeUserNotFound:
-            raise HTTPException(status_code=404, detail=f"No such LeetCode user: {username}")
+            raise HTTPException(
+                status_code=404,
+                detail="User not found. Make sure you use your LeetCode username, not your email.",
+            )
         except Exception as exc:
             raise HTTPException(status_code=502, detail=f"LeetCode fetch failed: {exc}")
 
@@ -105,7 +108,10 @@ def get_pattern_coverage(username: str, db: Session = Depends(get_db)):
     try:
         solved = leetcode_service.fetch_recent_solved_problems(username)
     except leetcode_service.LeetCodeUserNotFound:
-        raise HTTPException(status_code=404, detail=f"No such LeetCode user: {username}")
+        raise HTTPException(
+            status_code=404,
+            detail="User not found. Make sure you use your LeetCode username, not your email.",
+        )
     except Exception as exc:
         raise HTTPException(status_code=502, detail=f"LeetCode fetch failed: {exc}")
 
