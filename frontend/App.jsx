@@ -168,7 +168,8 @@ export default function App() {
           <div className="tools-page-heading">
             <div>
               <div className="section-label mono">practice tools</div>
-              <h1 className="display">Work through your problem.</h1>
+              <h1 className="display">Get unstuck on your problem.</h1>
+              <p className="tool-page-description">Use a hint to think through the next step, or diagnose a bug in your solution.</p>
             </div>
             <div className="tool-switcher" role="tablist" aria-label="Choose a practice tool">
               <button
@@ -261,6 +262,7 @@ export default function App() {
 
       <div className="section">
         <div className="section-label mono">choose an algorithm</div>
+        <p className="section-description">Find a problem to practice, or filter suggestions by algorithm.</p>
         <PatternPicker
           patterns={visiblePatterns}
           selectedPattern={selectedPattern}

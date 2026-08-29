@@ -35,6 +35,7 @@ export function HintTool({ userId, problem, onProblemChange, focusToken }) {
   return (
     <div className="tool-card">
       <h3 className="display">Get a hint</h3>
+      <p className="tool-description">Work through the idea without being given the full solution.</p>
       <label>Problem statement</label>
       <textarea
         ref={problemRef}
@@ -92,6 +93,7 @@ export function FixTool({ userId, problem, onProblemChange, focusToken }) {
   return (
     <div className="tool-card">
       <h3 className="display">Fix my solution</h3>
+      <p className="tool-description">Find the cause of a failing test and make a minimal fix.</p>
       <label>Problem statement</label>
       <textarea ref={problemRef} value={problem} onChange={(e) => onProblemChange(e.target.value)} />
       <label>Your code</label>

@@ -104,7 +104,7 @@ describe("App", () => {
 
   it("loads profile and pattern data on username submit, updates UI", async () => {
     render(<App />);
-    const input = screen.getByPlaceholderText("enter your username and hit enter");
+    const input = screen.getByPlaceholderText("enter your LeetCode username and hit enter");
     fireEvent.change(input, { target: { value: "testuser" } });
     fireEvent.keyDown(input, { key: "Enter" });
 
@@ -127,7 +127,7 @@ describe("App", () => {
 
   it("returns to the general landing page from synced mode", async () => {
     render(<App />);
-    const input = screen.getByPlaceholderText("enter your username and hit enter");
+    const input = screen.getByPlaceholderText("enter your LeetCode username and hit enter");
     fireEvent.change(input, { target: { value: "testuser" } });
     fireEvent.keyDown(input, { key: "Enter" });
 
@@ -136,12 +136,12 @@ describe("App", () => {
 
     expect(screen.getByText("no profile loaded")).toBeInTheDocument();
     expect(screen.queryByText("Every pattern has a")).not.toBeInTheDocument();
-    expect(screen.getByText(/Find your next/)).toBeInTheDocument();
+    expect(screen.getByText(/Solve your next/)).toBeInTheDocument();
   });
 
   it("refreshes recommendation problems without changing the pattern groups", async () => {
     render(<App />);
-    const input = screen.getByPlaceholderText("enter your username and hit enter");
+    const input = screen.getByPlaceholderText("enter your LeetCode username and hit enter");
     fireEvent.change(input, { target: { value: "testuser" } });
     fireEvent.keyDown(input, { key: "Enter" });
 
@@ -166,7 +166,7 @@ describe("App", () => {
 
   it("refreshes problems within the selected pattern", async () => {
     render(<App />);
-    const input = screen.getByPlaceholderText("enter your username and hit enter");
+    const input = screen.getByPlaceholderText("enter your LeetCode username and hit enter");
     fireEvent.change(input, { target: { value: "testuser" } });
     fireEvent.keyDown(input, { key: "Enter" });
 
@@ -187,7 +187,7 @@ describe("App", () => {
 
   it("pages through recently solved problems four at a time", async () => {
     render(<App />);
-    const input = screen.getByPlaceholderText("enter your username and hit enter");
+    const input = screen.getByPlaceholderText("enter your LeetCode username and hit enter");
     fireEvent.change(input, { target: { value: "testuser" } });
     fireEvent.keyDown(input, { key: "Enter" });
 
@@ -201,7 +201,7 @@ describe("App", () => {
   it("shows an error status when the backend is unreachable", async () => {
     global.fetch = vi.fn(() => Promise.reject(new Error("could not reach the backend")));
     render(<App />);
-    const input = screen.getByPlaceholderText("enter your username and hit enter");
+    const input = screen.getByPlaceholderText("enter your LeetCode username and hit enter");
     fireEvent.change(input, { target: { value: "testuser" } });
     fireEvent.keyDown(input, { key: "Enter" });
 

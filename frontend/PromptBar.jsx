@@ -16,7 +16,7 @@ export default function PromptBar({ onSubmit, status, statusError }) {
           <span className="prompt-prefix mono">leetcode ~$</span>
           <input
             type="text"
-            placeholder="enter your username and hit enter"
+            placeholder="enter your LeetCode username and hit enter"
             value={value}
             onChange={(e) => setValue(e.target.value)}
             onKeyDown={handleKeyDown}
