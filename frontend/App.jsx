@@ -262,7 +262,6 @@ export default function App() {
 
       <div className="section">
         <div className="section-label mono">choose an algorithm</div>
-        <p className="section-description">Find a problem to practice, or filter suggestions by algorithm.</p>
         <PatternPicker
           patterns={visiblePatterns}
           selectedPattern={selectedPattern}
