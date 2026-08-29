@@ -109,12 +109,4 @@ def get_pattern_coverage(username: str, db: Session = Depends(get_db)):
     except Exception as exc:
         raise HTTPException(status_code=502, detail=f"LeetCode fetch failed: {exc}")
 
-    if not solved:
-        return {
-            "coverage": {},
-            "weakest_patterns": [],
-            "unclassified_count": 0,
-            "note": "No recent solved problems found for this user.",
-        }
-
     return pattern_service.compute_pattern_coverage(db, solved)
