@@ -5,7 +5,7 @@ export default function Hero() {
         Solve your next <span className="accent">LeetCode</span> problem.
       </h1>
       <p>Choose a problem, track your progress, and get a hint or bug fix when you get stuck.</p>
-      <div className="hero-meta mono">your personal LeetCode practice helper</div>
+      <div className="hero-meta mono">AI powered by Gemini</div>
     </div>
   );
 }
