@@ -4,13 +4,13 @@ export default function PatternPicker({ patterns, selectedPattern, onSelect, com
   return (
     <div
       className={`pattern-picker ${compact ? "compact" : ""}`}
-      aria-label="Choose a problem pattern"
+      aria-label="Choose an algorithm"
     >
       <button
-        className={`pattern-choice all ${selectedPattern === "All patterns" ? "selected" : ""}`}
-        onClick={() => onSelect("All patterns")}
+        className={`pattern-choice all ${selectedPattern === "All algorithms" ? "selected" : ""}`}
+        onClick={() => onSelect("All algorithms")}
       >
-        All patterns
+        All algorithms
       </button>
       {patterns.map((pattern) => (
         <button

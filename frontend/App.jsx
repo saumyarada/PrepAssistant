@@ -34,7 +34,7 @@ export default function App() {
   const [promptStatus, setPromptStatus] = useState("");
   const [promptError, setPromptError] = useState(false);
   const [loaded, setLoaded] = useState(false);
-  const [selectedPattern, setSelectedPattern] = useState("All patterns");
+  const [selectedPattern, setSelectedPattern] = useState("All algorithms");
   const [suggestedProblems, setSuggestedProblems] = useState(() =>
     randomProblems(EXPANDED_SUGGESTIONS)
   );
@@ -78,7 +78,7 @@ export default function App() {
     setPatternData(null);
     setPatternError(null);
     setLoaded(false);
-    setSelectedPattern("All patterns");
+    setSelectedPattern("All algorithms");
     setSuggestedProblems(randomProblems(EXPANDED_SUGGESTIONS));
     setSolvedPage(0);
     setPromptStatus("");
@@ -89,7 +89,7 @@ export default function App() {
   async function handleUsernameSubmit(name) {
     setPromptStatus("loading profile...");
     setPromptError(false);
-    setSelectedPattern("All patterns");
+    setSelectedPattern("All algorithms");
     setSuggestedProblems(randomProblems(EXPANDED_SUGGESTIONS));
     setSolvedPage(0);
 
@@ -126,16 +126,16 @@ export default function App() {
   const selectedProblemPool = clickedPatternSource.filter(
     (problem) => problem.pattern === selectedPattern
   );
-  const activeSuggestionPool = selectedPattern === "All patterns" ? suggestionPool : selectedProblemPool;
+  const activeSuggestionPool = selectedPattern === "All algorithms" ? suggestionPool : selectedProblemPool;
   const refreshSource =
-    selectedPattern === "All patterns"
+    selectedPattern === "All algorithms"
       ? loaded
         ? syncedSuggestions
         : EXPANDED_SUGGESTIONS
       : selectedProblemPool;
   const hasProblemRefresh = refreshSource.length > 4;
   const visibleSuggestions =
-    selectedPattern === "All patterns" ? suggestedProblems : suggestedProblems.filter(
+    selectedPattern === "All algorithms" ? suggestedProblems : suggestedProblems.filter(
       (problem) => problem.pattern === selectedPattern
     );
   const rankedPatterns = patternData?.coverage
@@ -260,14 +260,14 @@ export default function App() {
       )}
 
       <div className="section">
-        <div className="section-label mono">choose a pattern</div>
+        <div className="section-label mono">choose an algorithm</div>
         <PatternPicker
           patterns={visiblePatterns}
           selectedPattern={selectedPattern}
           compact={loaded}
           onSelect={(pattern) => {
             setSelectedPattern(pattern);
-            const pool = pattern === "All patterns" ? suggestionPool : clickedPatternSource.filter(
+            const pool = pattern === "All algorithms" ? suggestionPool : clickedPatternSource.filter(
               (problem) => problem.pattern === pattern
             );
             setSuggestedProblems(randomProblems(pool, 4, suggestedProblems));
