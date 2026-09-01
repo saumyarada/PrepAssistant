@@ -1,7 +1,4 @@
 # PrepAssistant
-
-## Resume Description
-
 **PrepAssistant — AI-Powered Interview Practice Platform**  
 Personal Project
 
